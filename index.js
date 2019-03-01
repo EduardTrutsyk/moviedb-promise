@@ -71,7 +71,7 @@ module.exports = class {
   makeRequest (type, params, endpoint, options) {
     return new Promise((resolve, reject) => {
       // Interpret options
-      const { append_to_response: appendToResponse, timeout } = (typeof options === 'string' || options instanceof String) ? { append_to_response: options } : options || ''
+      const { append_to_response: appendToResponse, timeout, language } = (typeof options === 'string' || options instanceof String) ? { append_to_response: options } : options || ''
       // Some endpoints have an optional account_id parameter (when there's a session).
       // If it's not included, assume we want the current user's id,
       // which is setting it to '{account_id}'
@@ -107,6 +107,10 @@ module.exports = class {
 
       if (appendToResponse) {
         req.query({ append_to_response: appendToResponse })
+      }
+
+      if (language) {
+        req.query({ language });
       }
 
       if (timeout) {
