@@ -4,7 +4,7 @@ const request = require('superagent')
 const endpoints = require('./lib/endpoints')
 
 module.exports = class {
-  constructor (apiKey, useDefaultLimits = true, baseUrl = 'https://api.themoviedb.org/3/') {
+  constructor (apiKey, language, useDefaultLimits = true, baseUrl = 'https://api.themoviedb.org/3/') {
     if (!apiKey) {
       throw new Error('Bad api key')
     }
@@ -12,6 +12,7 @@ module.exports = class {
     this.apiKey = apiKey
     this.baseUrl = baseUrl
     this.useDefaultLimits = useDefaultLimits
+    this.language = language
 
     if (this.useDefaultLimits) {
       this.limit = {
@@ -119,7 +120,7 @@ module.exports = class {
       }
 
       // Interpret options
-      const { append_to_response: appendToResponse, timeout, language } = (typeof options === 'string' || options instanceof String) ? { append_to_response: options } : options || ''
+      const { append_to_response: appendToResponse, timeout } = (typeof options === 'string' || options instanceof String) ? { append_to_response: options } : options || ''
 
       // Some endpoints have an optional account_id parameter (when there's a session).
       // If it's not included, assume we want the current user's id,
@@ -159,8 +160,8 @@ module.exports = class {
         req.query({ append_to_response: appendToResponse })
       }
 
-      if (language) {
-        req.query({ language });
+      if (this.language) {
+        req.query({ language: this.language });
       }
 
       if (timeout) {
